@@ -1,55 +1,56 @@
 ﻿using CareNet_System.Models;
+using CareNet_System.Repository;
+using CareNet_System.Repostatory;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
-namespace CareNet_System.Repostatory
+namespace CareNet_System.Repository
 {
-    public class DepartmentRepository:IDepartmentRepository
-
+    public class DepartmentRepository : IDepartmentRepository
     {
-        HosPitalContext context;
-        
-        public DepartmentRepository( HosPitalContext ctx) {
-        context = ctx ;
-                
-        }
+        private readonly HosPitalContext _context;
 
-        public List<Department> GetAll() { 
-        
-            return context.Departments.ToList();
-        }
-
-        public void Add (Department obj)
+        public DepartmentRepository(HosPitalContext context)
         {
-            context.Departments.Add(obj);
+            _context = context;
         }
 
-        public void Update(Department obj) {
-
-            List<Department> deptsList = context.Departments.ToList();
-
-            Department dept = context.Departments.FirstOrDefault(d => d.Id == obj.Id);
-
-            dept.name = obj.name;
-            dept.manager = obj.manager;
-            dept.employees_num = obj.employees_num;
-            dept.Patients_num = obj.Patients_num;
-           // context.Departments.Update(obj);
-            
-        }
-        public void Delete(int id) { 
-        context.Departments.Remove(context.Departments.FirstOrDefault(d=>d.Id==id));
-        }
-
-        public void Save()
+        public List<Department> GetAll()
         {
-            context.SaveChanges();
+            return _context.Departments.Include(d => d.staff).Include(d => d.patients).ToList();
         }
 
         public Department GetById(int id)
         {
-           return context.Departments.FirstOrDefault(d => d.Id == id);
+            return _context.Departments.Include(d => d.staff).Include(d => d.patients)
+                .FirstOrDefault(d => d.Id == id);
+        }
 
-            
+        public void Add(Department entity)
+        {
+            _context.Departments.Add(entity);
+            Save();
+        }
 
+        public void Update(Department entity)
+        {
+            _context.Departments.Update(entity);
+            Save();
+        }
+
+        public void Delete(int id)
+        {
+            var dept = _context.Departments.Find(id);
+            if (dept != null)
+            {
+                _context.Departments.Remove(dept);
+                Save();
+            }
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

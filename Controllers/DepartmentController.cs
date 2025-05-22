@@ -1,83 +1,69 @@
-﻿using CareNet_System.Repostatory;
+﻿using CareNet_System.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CareNet_System.Models;
+using CareNet_System.Repostatory;
 
 namespace CareNet_System.Controllers
 {
-    public class DepartmentController : Controller
+    [Authorize]
+    public class DepartmentsController : Controller
     {
-        IDepartmentRepository DeptRepo; 
+        private readonly IDepartmentRepository _deptRepo;
 
-        public DepartmentController(IDepartmentRepository _deptRepo)
+        public DepartmentsController(IDepartmentRepository deptRepo)
         {
-            DeptRepo = _deptRepo;
+            _deptRepo = deptRepo;
         }
 
-        public IActionResult AllDepts() {
-            List<Department> DeptList = DeptRepo.GetAll();
-            return View("All",DeptList);
+        public IActionResult Index()
+        {
+            var deptList = _deptRepo.GetAll();
+            return View("~/Views/Department/All.cshtml", deptList); 
         }
-        public IActionResult NewDept(Department newDept) { 
-            Department dept = new Department();
 
-            // dept.Id = newDept.Id;
+        public IActionResult New()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public IActionResult New(Department newDept)
+        {
             if (ModelState.IsValid)
             {
-                dept.name = newDept.name;
-                dept.manager = newDept.manager;
-                dept.employees_num = newDept.employees_num;
-                dept.Patients_num = newDept.Patients_num;
-
-                DeptRepo.Add(dept);
-                DeptRepo.Save();
-                return RedirectToAction("AllDepts");
-
+                _deptRepo.Add(newDept);
+                return RedirectToAction("Index");
             }
-            return View("New", newDept);
-
+            return View(newDept);
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            Department dept = DeptRepo.GetById(id); 
+            var dept = _deptRepo.GetById(id);
             if (dept == null)
             {
                 return NotFound();
             }
-
-            return View(dept); 
+            return View(dept);
         }
-
 
         [HttpPost]
-        public IActionResult Edit(  Department deptFromDB) {
-
+        public IActionResult Edit(Department updatedDept)
+        {
             if (ModelState.IsValid)
             {
-               
-
-                DeptRepo.Update(deptFromDB);
-                DeptRepo.Save();
-                List<Department> alldepts = DeptRepo.GetAll(); 
-
-                return View("All",alldepts);
+                _deptRepo.Update(updatedDept);
+                return RedirectToAction("Index");
             }
-            return View(deptFromDB);
-        
+            return View(updatedDept);
         }
-       public IActionResult Delete(int id)
+
+        public IActionResult Delete(int id)
         {
-            DeptRepo.Delete(id);
-            DeptRepo.Save();
-
-            List<Department> alldepts = DeptRepo.GetAll();
-
-            return View("All", alldepts);
+            _deptRepo.Delete(id);
+            return RedirectToAction("Index");
         }
-
-
-
     }
 }

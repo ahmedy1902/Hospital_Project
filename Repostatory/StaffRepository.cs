@@ -15,6 +15,13 @@ public class StaffRepository : IRepository<Staff>
         return _context.Staff.Include(s => s.department).ToList();
     }
 
+    public Staff GetById(int id)
+    {
+        return _context.Staff
+            .Include(s => s.department)
+            .FirstOrDefault(s => s.Id == id);
+    }
+
     public void Add(Staff obj)
     {
         _context.Staff.Add(obj);
