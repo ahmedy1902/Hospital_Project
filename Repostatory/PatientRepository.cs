@@ -54,6 +54,11 @@ namespace CareNet_System.Repostatory
         {
             return context.Patients.FirstOrDefault(p => p.Id == id);
         }
+
+        public Patient GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     

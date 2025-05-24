@@ -28,8 +28,9 @@ namespace CareNet_System
             builder.Services.AddDbContext<HosPitalContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("cs")));
 
-            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IRepository<Staff>, StaffRepository>();
+            builder.Services.AddScoped<IRepository<Department>, DepartmentRepository>();
+            builder.Services.AddScoped<IRepository<Patient>, PatientRepository>();
             builder.Services.AddScoped<IBillsRepository, BillsRepository>();
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

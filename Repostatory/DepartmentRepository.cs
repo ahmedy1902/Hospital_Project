@@ -4,9 +4,9 @@ using CareNet_System.Repostatory;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace CareNet_System.Repository
+namespace CareNet_System.Repostatory
 {
-    public class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : IRepository<Department>
     {
         private readonly HosPitalContext _context;
 
