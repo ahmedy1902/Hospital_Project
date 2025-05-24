@@ -4,7 +4,7 @@ namespace CareNet_System.Models
 {
     public enum TreatmentType
     {
-        Drug, Surgery, Radiation, Chemotherapy, PhysicalTherapy
+        Drug , Surgery, Radiation, Chemotherapy, PhysicalTherapy, DrugTherapy, GeneralCheckup, EmergencyCare, SkinTreatment, UrologyCheckup
     }
     public class Patient
     {
