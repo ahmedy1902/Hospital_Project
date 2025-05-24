@@ -17,5 +17,6 @@ namespace CareNet_System.Models
         public DbSet<Bills> Bills { get; set; }
 
 
+
     }
 }

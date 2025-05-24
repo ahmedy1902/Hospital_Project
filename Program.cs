@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using CareNet_System.Models;
-using CareNet_System.Repository;
 using Microsoft.AspNetCore.Mvc;
+using CareNet_System.Models;
 using CareNet_System.Repostatory;
+using CareNet_System.Repositories;
+using CareNet_System.Repository;
 
 namespace CareNet_System
 {
@@ -27,6 +28,10 @@ namespace CareNet_System
             builder.Services.AddDbContext<HosPitalContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("cs")));
 
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IRepository<Staff>, StaffRepository>();
+            builder.Services.AddScoped<IBillsRepository, BillsRepository>();
+
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
@@ -39,8 +44,6 @@ namespace CareNet_System
             .AddEntityFrameworkStores<HosPitalContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            builder.Services.AddScoped<IRepository<Staff>, StaffRepository>();
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
